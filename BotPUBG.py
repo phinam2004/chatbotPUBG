@@ -83,9 +83,9 @@ if "initialized" not in st.session_state:
 #     with st.chat_message(message.role):
 #         st.markdown(message.parts[0].text)
 
-if "chat_history" in st.session_state:
-    for message in st.session_state['chat_history']:
-        st.write(message)
+# if "chat_history" in st.session_state:
+#     for message in st.session_state['chat_history']:
+#         st.write(message)
 
 # Tạo thanh công cụ
 with st.sidebar:
@@ -93,7 +93,7 @@ with st.sidebar:
     if st.button("Đoạn chat mới"):
         # Reset chat state
         st.session_state.chat = model.start_chat(history=[])
-        response = st.session_state.chat.send_message("Bạn là một chuyên gia về PUBG. Chỉ trả lời các câu hỏi liên quan đến PUBG.")
+        response = st.session_state.chat.send_message("Bạn là một chuyên gia về PUBG. Chỉ trả lời các câu hỏi liên quan đến PUBG. Nếu không liên quan đến PUBG thì không cần trả lời !")
         # Reset other states
         st.session_state.uploaded_file = None  # Reset file state
         st.session_state.showing_content = False  # Reset content display state
@@ -133,7 +133,7 @@ if user_input:
     st.chat_message("user").markdown(user_input)
 
     # Generate response
-    response = st.session_state.chat.send_message(user_input)
+    response = st.session_state.chat.send_message(user_input + ". Nếu không liên quan đến PUBG thì không cần trả lời !")
     
     # Display assistant response
     with st.chat_message("assistant"):
