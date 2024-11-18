@@ -15,7 +15,6 @@ generation_config = {
     "top_p": 1,
     "top_k": 1,
     "max_output_tokens": 2048,
-    # "context": "You are an expert in PUBG. Only answer questions related to PUBG."
 }
 
 safety_settings = [
@@ -73,19 +72,9 @@ if not st.session_state.typing_effect_triggered:
 # Kiểm tra xem đã khởi tạo session chưa
 if "initialized" not in st.session_state:
     # Gửi tin nhắn đến chatbot mà không hiển thị trên giao diện
-    _ = st.session_state.chat.send_message("Bạn là một chuyên gia về PUBG. Chỉ trả lời các câu hỏi liên quan đến PUBG.")
+    _ = st.session_state.chat.send_message("Bạn là một chuyên gia về PUBG. Chỉ trả lời các câu hỏi liên quan đến PUBG. Nếu ngoài PUBG thì không cần trả lời !")
     # Đánh dấu là đã khởi tạo
     st.session_state.initialized = True
-
-
-# Display chat history (excluding the system message)
-# for message in st.session_state.chat.history:
-#     with st.chat_message(message.role):
-#         st.markdown(message.parts[0].text)
-
-# if "chat_history" in st.session_state:
-#     for message in st.session_state['chat_history']:
-#         st.write(message)
 
 # Tạo thanh công cụ
 with st.sidebar:
@@ -111,8 +100,6 @@ with st.sidebar:
 
     # Nút để hiển thị nội dung
     show_content = st.button("Hiển thị nội dung")
-
-# Initialize session state
 
 # Khởi tạo trạng thái trong session_state nếu chưa có
 if 'showing_content' not in st.session_state:
@@ -173,7 +160,6 @@ if user_input:
                         st.image(image_url, caption=two_weapon.upper(), use_container_width=True)
                         break
                 image_url = f"https://wstatic-prod.pubg.com/web/live/static/game-info/weapons/images/viewer/img-weapons-{weapon_name}.png"
-                # image_url = f"https://wstatic-prod.pubg.com/web/live/static/game-info/weapons/images/viewer/img-weapons-m16a4.png"
                 if is_valid_image(image_url):
                     text_temp = "\nĐang tạo ảnh xin vui lòng chờ..."
                     for i in text_temp:
@@ -181,19 +167,7 @@ if user_input:
                         response_placeholder.markdown(displayed_text)
                         time.sleep(0.01)
                     st.image(image_url, caption=weapon_name.upper(), use_container_width=True)
-                    # if weapon_name not in weapon_data.keys():
-                    #     temp_weapon_name = weapon_name
-                        # weapon_data.update(
-                        # {weapon_name.upper(): {
-                        #     "damage": random.randint(40, 100),
-                        #     "speed": random.randint(20, 93),
-                        #     "stability": random.randint(30, 72),
-                        #     "dps": random.randint(50, 95),
-                        #     "range": random.randint(32, 95),
-                        # }}
-                    # )
                     break
-            # Check if the image URL is valid before displaying it
         elif "xe" in check:
             veh_text = response.text.split()
             for i in veh_text:
@@ -204,7 +178,7 @@ if user_input:
                     for i in text_temp:
                         displayed_text += i
                         response_placeholder.markdown(displayed_text)
-                        time.sleep(0.01)    
+                        time.sleep(0.01)
                     st.image(image_url, caption=veh_name.upper(), use_container_width=True)
                     break
         elif "bản đồ" in check:
@@ -221,7 +195,6 @@ if user_input:
                         time.sleep(0.01)
                     st.image(image_url, caption=map_name.upper(), use_container_width=True)
                     break
-# Upload file
 
 # Hiển thị nội dung nếu người dùng đã nhấn nút và có lựa chọn
 
@@ -344,7 +317,7 @@ if st.session_state.showing_content:
         
         # Hiển thị thông số vũ khí
         if (weapon_name != "Hiện đang không chọn !" and weapon_type != "Throwables"):
-            response = st.session_state.chat.send_message("Thông tin ngắn gọn về súng " + weapon_name)
+            response = st.session_state.chat.send_message("Thông tin chi tiết về " + ("vũ khí cận chiến " if weapon_type == "Melee" else "súng ") + weapon_name)
 
             # Display assistant response
             with st.chat_message("assistant"):
@@ -421,15 +394,7 @@ if st.session_state.showing_content:
                 
 
     elif selected_option == "Chiến thuật":
-        # st.subheader("Chiến thuật chơi")
-        # st.write("Dưới đây là một số chiến thuật nổi bật:")
-        # st.write("- Di chuyển cẩn thận và tránh những khu vực nguy hiểm")
-        # st.write("- Tìm vị trí cao để quan sát và bắn trước")
-        # st.write("- Sử dụng trang bị và cấp độ vũ khí phù hợp")
-        # st.write("- Phối hợp với đội ngũ để tăng cơ hội chiến thắng")
-        # st.write("- ẩn nấp: Sử dụng môi trường xung quanh để ẩn nấp và tấn công kẻ thù bất ngờ.")
-        # st.write("- Tấn công từ xa: Sử dụng vũ khí tầm xa để tiêu diệt kẻ thù từ khoảng cách an toàn.")
-        # st.write("- chiến thuật di chuyển: Luôn di chuyển để tránh bị nhắm bắn.")
+        
         strategies_data = [
             "Hiện đang không chọn!",
             "Hạ cánh nhanh",
@@ -472,7 +437,7 @@ if st.session_state.showing_content:
 
         # Hiển thị chiến thuật được chọn
         if selected_strategy != "Hiện đang không chọn!":
-            response = st.session_state.chat.send_message("Phân tích chi tiết chiến thuật" + selected_strategy + "và đưa ra cách tận dụng, loại map sử dụng và nhiều cách tận dụng khác.")
+            response = st.session_state.chat.send_message("Phân tích chi tiết chiến thuật " + selected_strategy + " và đưa ra cách tận dụng, loại map sử dụng và nhiều cách tận dụng khác.")
 
             # Display assistant response
             with st.chat_message("assistant"):
