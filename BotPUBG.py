@@ -87,6 +87,7 @@ with st.sidebar:
         st.session_state.uploaded_file = None  # Reset file state
         st.session_state.showing_content = False  # Reset content display state
         st.session_state.selected_option = "Không chọn"  # Reset selected option
+        st.session_state.typing_effect_triggered = False
         typing_effect("PUBG ChatBot", title_placeholder, delay=0.1)
         st.rerun()  # Refresh the page to reflect changes
     
@@ -202,9 +203,19 @@ if st.session_state.showing_content:
     st.markdown("<div class='container'>", unsafe_allow_html=True)
 
     if selected_option == "Không chọn":
-        st.warning("Vui lòng chọn một chức năng để hiển thị nội dung.")
-    
+        if "initialized" not in st.session_state:
+            # Gửi tin nhắn đến chatbot mà không hiển thị trên giao diện
+            _ = st.session_state.chat.send_message("Bạn là một chuyên gia về PUBG. Chỉ trả lời các câu hỏi liên quan đến PUBG. Nếu ngoài PUBG thì không cần trả lời !")
+            # Đánh dấu là đã khởi tạo
+            st.session_state.initialized = True
+
+        st.session_state.typing_effect_triggered = False
+
+        if "typing_effect_triggered" not in st.session_state:
+            st.session_state.typing_effect_triggered = True
+
     elif selected_option == "Cách chơi":
+        response = st.session_state.chat.send_message("Bạn là một chuyên gia về PUBG. Chỉ trả lời các câu hỏi liên quan đến cách chơi của PUBG và hãy nâng cấp lên chỉ chuyên về cách chơi để tối ưu hơn không cần các dữ liệu ngoài cách chơi. Nếu không liên quan đến PUBG thì không cần trả lời !")
         st.header("Cách chơi PUBG")
         st.subheader("Hướng dẫn cơ bản")
         st.write("Trong PUBG, mục tiêu là trở thành người chơi cuối cùng sống sót. Bạn cần tìm vũ khí, trang bị và hạ gục các đối thủ khác.")
@@ -213,6 +224,9 @@ if st.session_state.showing_content:
 
     elif selected_option == "Vũ khí":
         # Dữ liệu về vũ khí
+
+        response = st.session_state.chat.send_message("Bạn là một chuyên gia về PUBG. Chỉ trả lời các câu hỏi liên quan đến vũ khí (bao gồm cả các loại giáp, balo và các phương tiện) của PUBG và hãy nâng cấp lên chỉ chuyên về vũ khí để tối ưu hơn không cần các dữ liệu ngoài vũ khí. Nếu không liên quan đến PUBG thì không cần trả lời !")
+
         st.title("PUBG Weapon Information")
         
         weapon_data = {"Vui lòng chọn loại vũ khí và vũ khí bạn cần hỗ trợ.":{"Hiện đang không chọn !":0}}
@@ -356,6 +370,7 @@ if st.session_state.showing_content:
             image_url = f"https://wstatic-prod.pubg.com/web/live/static/game-info/weapons/images/viewer/img-weapons-{weapon_name.lower()}.png"
             st.image(image_url, caption=weapon_name.upper(), use_container_width=True)
         elif (weapon_name != "Hiện đang không chọn !" and weapon_type == "Throwables"):
+
             response = st.session_state.chat.send_message("Thông tin ngắn gọn về " + weapon_name)
 
             # Display assistant response
@@ -394,7 +409,9 @@ if st.session_state.showing_content:
                 
 
     elif selected_option == "Chiến thuật":
-        
+
+        response = st.session_state.chat.send_message("Bạn là một chuyên gia về PUBG. Chỉ trả lời các câu hỏi liên quan đến chiến thuật của PUBG (bao gồm cả chiến thuật sử dụng các loại vũ khí, vật phẩm, ...) và hãy nâng cấp lên chỉ chuyên về chiến thuật để tối ưu hơn không cần các dữ liệu ngoài chiến thuật. Nếu không liên quan đến PUBG thì không cần trả lời !")
+
         strategies_data = [
             "Hiện đang không chọn!",
             "Hạ cánh nhanh",
@@ -450,6 +467,9 @@ if st.session_state.showing_content:
                     response_placeholder.markdown(displayed_text)
                     time.sleep(0.01)
     elif selected_option == "Bản đồ":
+
+        response = st.session_state.chat.send_message("Bạn là một chuyên gia về PUBG. Chỉ trả lời các câu hỏi liên quan đến bản đồ (bao gồm cả cách chơi bản đồ đó, các thứ liên quan đến bản đồ bao gồm vũ khí có ở bản đồ đó không, ...) của PUBG và hãy nâng cấp lên chỉ chuyên về bản đồ để tối ưu hơn không cần các dữ liệu ngoài bản đồ. Nếu không liên quan đến PUBG thì không cần trả lời !")
+
         # Dữ liệu về bản đồ
         map_data = {
             "Hiện đang không chọn!": {},
